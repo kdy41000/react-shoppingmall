@@ -23,6 +23,7 @@ const Detail = () => {
     const [count, setCount] = useState(1);
     const [totalPrice, setTotalPrice] = useState(item.price * count);
     const [pressTab, setPressTab] = useState(0);
+    const [tabSwitch, setTabSwitch] = useState(false);
 
     // mount, update시 useEffect 실행(html태그가 렌더링 된 후에 실행됨)
     useEffect(() => {
@@ -95,21 +96,25 @@ const Detail = () => {
 
         <Nav variant="tabs" defaultActiveKey="/link-0">
           <Nav.Item>
-            <Nav.Link eventKey="link-0" onClick={() => setPressTab(0)}>Active</Nav.Link>
+            <Nav.Link eventKey="link-0" onClick={() => {setTabSwitch(false); setPressTab(0)}}>Active</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link eventKey="link-1" onClick={() => setPressTab(1)}>Option 2</Nav.Link>
+            <Nav.Link eventKey="link-1" onClick={() => {setTabSwitch(false); setPressTab(1)}}>Option 2</Nav.Link>
           </Nav.Item>
         </Nav>
 
-        <CSSTransition in={true} classNames="wow" timeout={500}>
-          <TabContent pressTab={pressTab}/>
+        <CSSTransition in={tabSwitch} classNames="wow" timeout={500}>
+          <TabContent pressTab={pressTab} setTabSwitch={setTabSwitch} />
         </CSSTransition>
       </div>
     );
 };
 
-const TabContent = ({pressTab}) => {
+const TabContent = ({pressTab, setTabSwitch}) => {
+
+  useEffect(() => {
+    setTabSwitch(true);
+  });
   if(pressTab === 0) {
     return (
           <>
