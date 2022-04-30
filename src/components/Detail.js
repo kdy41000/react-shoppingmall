@@ -2,6 +2,9 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MenuTitleContext } from '../App';
+import { Nav } from 'react-bootstrap';
+import { CSSTransition } from 'react-transition-group';
+import './Detail.scss';
 
 
 const StyledButton = styled.button`
@@ -19,6 +22,7 @@ const Detail = () => {
     const [bargenAlert, setBargenAlert] = useState(true);
     const [count, setCount] = useState(1);
     const [totalPrice, setTotalPrice] = useState(item.price * count);
+    const [pressTab, setPressTab] = useState(0);
 
     // mount, update시 useEffect 실행(html태그가 렌더링 된 후에 실행됨)
     useEffect(() => {
@@ -88,8 +92,39 @@ const Detail = () => {
             <StyledButton className="btn btn-danger" bg="blue" onClick={purchaseItemClickHandler}>주문하기</StyledButton>
           </div>
         </div>
+
+        <Nav variant="tabs" defaultActiveKey="/link-0">
+          <Nav.Item>
+            <Nav.Link eventKey="link-0" onClick={() => setPressTab(0)}>Active</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="link-1" onClick={() => setPressTab(1)}>Option 2</Nav.Link>
+          </Nav.Item>
+        </Nav>
+
+        <CSSTransition in={true} classNames="wow" timeout={500}>
+          <TabContent pressTab={pressTab}/>
+        </CSSTransition>
       </div>
     );
 };
+
+const TabContent = ({pressTab}) => {
+  if(pressTab === 0) {
+    return (
+          <>
+            <span>0번째 탭 콘텐츠</span>
+          </>
+    );
+  } else if(pressTab === 1) {
+    return (
+      <>
+        <span>1번째 탭 콘텐츠</span>
+      </>
+    );
+  } else {
+    return;
+  }
+}
 
 export default Detail;
