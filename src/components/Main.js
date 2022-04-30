@@ -1,23 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import CardShoes from './CardShoes';
 import styled from 'styled-components';
 import axios from 'axios';
+import { MenuTitleContext } from '../App';
 
 const MoreBtn = styled.button`
     display: ${props => !props.moreBtn && 'none'};
 `;
 
 const Main = ({shoes, setShoes, itemOrderAscHander, itemOrderDescHander}) => {
-
+    const menuTitle = useContext(MenuTitleContext);
     const [moreBtn, setMoreBtn] = useState(true);
 
     const moreItemHandler = () => {
         axios.get('https://codingapple1.github.io/shop/data2.json')
         .then((res) => { 
             let tmpShoes = [...shoes];
-            console.log("res.data:",res.data);
             tmpShoes.push(...res.data);
-            console.log("tmpShoes:",tmpShoes);
             setShoes(tmpShoes);
             setMoreBtn(false);
             }
@@ -30,6 +29,7 @@ const Main = ({shoes, setShoes, itemOrderAscHander, itemOrderDescHander}) => {
 
     return (
         <div>
+            <h2>{menuTitle[0]}</h2>
             <div className='main-bg'></div>
             <div style={{float:'right'}}>
                 <span>정렬 </span>

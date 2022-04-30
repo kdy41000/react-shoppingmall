@@ -1,7 +1,9 @@
-import React,{ useState } from 'react';
+import React,{ useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MenuTitleContext } from '../App';
 
 const Purchase = ({shoes}) => {
+    const menuTitle = useContext(MenuTitleContext);
     const location = useLocation();
     const navigate = useNavigate();
     const item = location.state.item;
@@ -26,7 +28,7 @@ const Purchase = ({shoes}) => {
 
     return (
         <div>
-             <h2>주문정보</h2>
+             <h2>{menuTitle[3]}</h2>
             <div className="row">
             <div className="col-md-6">
                 <img alt="not found" src={item.imgUrl} width="30%" />

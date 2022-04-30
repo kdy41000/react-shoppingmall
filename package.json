@@ -16,7 +16,7 @@
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
   },
-  "homepage": "https://kdy41000.github.io/react-shoppingmall",
+  "homepage": "https://kdy41000.github.io/react-shoppingmall/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { MenuTitleContext } from '../App';
 
 
 const StyledButton = styled.button`
@@ -10,7 +11,7 @@ const StyledButton = styled.button`
 `;
 
 const Detail = () => {
-  
+    const menuTitle = useContext(MenuTitleContext);
     const location = useLocation();
     const navigate = useNavigate();
     const item = location.state.item;
@@ -57,7 +58,7 @@ const Detail = () => {
 
     return (
         <div className="container">
-          <h2>상세정보</h2>
+          <h2>{menuTitle[2]}</h2>
           {
             bargenAlert &&
           <div className="alert alert-warning">

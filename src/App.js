@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React,{ createContext, useEffect, useState } from "react";
 import './App.css';
 import { Nav, NavItem, NavLink, NavbarBrand,  } from 'react-bootstrap';
 import { list } from './data';
@@ -9,8 +9,11 @@ import Event from "./components/Event";
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Purchase from "./components/Purchase";
 
+export const MenuTitleContext = createContext();
+
 function App() {
 
+  const menuArr = ['홈','About','상세정보','주문정보'];
   const [shoes, setShoes] = useState([]);
   const navigate = useNavigate();
   //navigate(1) : 앞 페이지로 이동
@@ -58,6 +61,7 @@ function App() {
         </NavItem>
       </Nav>
 
+     <MenuTitleContext.Provider value={menuArr}>
       <Routes>
         <Route path="/" element={<Main shoes={shoes} setShoes={setShoes} itemOrderAscHander={itemOrderAscHander} itemOrderDescHander={itemOrderDescHander} />} />
         
@@ -83,7 +87,7 @@ function App() {
         <Route path="*" element={<>404</>} />
 
       </Routes>
-     
+      </MenuTitleContext.Provider>
     </div>
   );
 }
