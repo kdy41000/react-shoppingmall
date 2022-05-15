@@ -2,9 +2,11 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MenuTitleContext } from '../App';
-import { Nav } from 'react-bootstrap';
+import { Nav, Button } from 'react-bootstrap';
 import { CSSTransition } from 'react-transition-group';
 import './Detail.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCartData, setRecentItem } from '../store';
 
 
 const StyledButton = styled.button`
@@ -14,6 +16,8 @@ const StyledButton = styled.button`
 `;
 
 const Detail = () => {
+    const dispatch = useDispatch();
+    const { cartData } = useSelector((state) => { return state });
     const menuTitle = useContext(MenuTitleContext);
     const location = useLocation();
     const navigate = useNavigate();
@@ -33,6 +37,12 @@ const Detail = () => {
       },2000);
 
       return () => { clearTimeout(timer) }  // unmount시 타이머 객체 제거
+    },[]);
+
+    useEffect(() => {
+      return() => {  // unmount => redux store(setLocalStorage)
+        dispatch(setRecentItem(item.id));
+      }
     },[]);
 
     useEffect(() => {
@@ -59,6 +69,25 @@ const Detail = () => {
       item.count = count;
 
       navigate(`/purchase/${item.id}`, { state: {item: item}});
+    }
+
+    const onAddCartHandler = () => {
+      console.log("click");
+      if(count < 1) { 
+        alert("주문수량을 입력해 주세요."); 
+        return;
+      }
+
+      const idx = cartData.findIndex((element) => element.id === item.id);
+      if(idx !== -1) {
+        alert("장바구니에 아이템이 이미 존재합니다.");
+        navigate('/cart');
+      } else {
+        const param = {id: parseInt(item.id), name: item.title, count: parseInt(count)};
+        dispatch(addCartData(param));
+        alert("장바구니에 아이템이 추가되었습니다.");
+        navigate('/cart');
+      }
     }
 
     return (
@@ -90,7 +119,9 @@ const Detail = () => {
                 setCount(e.target.value.replace(/[^0-9]/g,''));
               }} />
               <br/>
-            <StyledButton className="btn btn-danger" bg="blue" onClick={purchaseItemClickHandler}>주문하기</StyledButton>
+            <StyledButton className="btn btn-danger" bg="blue" onClick={() => purchaseItemClickHandler()}>주문하기</StyledButton>
+            &nbsp;
+            <Button className="btn btn-danger" bg="green" onClick={() => onAddCartHandler()}>장바구니</Button>
           </div>
         </div>
 

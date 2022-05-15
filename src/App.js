@@ -8,21 +8,40 @@ import About from './components/About';
 import Event from "./components/Event";
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Purchase from "./components/Purchase";
+import Cart from "./components/Cart";
+import { useSelector } from "react-redux";
 
 export const MenuTitleContext = createContext();
 
 function App() {
+  const { pageName } = useSelector((state) => { return state });
 
-  const menuArr = ['홈','About','상세정보','주문정보'];
+  const [recentItems, setRecentItems] = useState([]);
+
+  const menuArr = ['홈','About','상세정보','주문정보','장바구니'];
   const [shoes, setShoes] = useState([]);
+ 
   const navigate = useNavigate();
   //navigate(1) : 앞 페이지로 이동
   //navigate(-1) : 이전 페이지로 이동
-
+ 
   useEffect(() => {
     setShoes(list);
   }, []);
 
+  useEffect(() => {
+    const items = localStorage.getItem("recentItems");
+    if(items != null && items !== undefined) {
+      let result = [];
+      for(let v of JSON.parse(items)) {
+        result.push(shoes.find((item) => item.id === parseInt(v)));
+      }
+      if(JSON.stringify(result) !== JSON.stringify(recentItems)) {
+        setRecentItems(result);
+      }
+    }
+  })
+  
   const itemOrderAscHander = () => {
     let tmpShoes = [...shoes];
     tmpShoes.sort(function(a, b) {
@@ -43,9 +62,10 @@ function App() {
     <div className="App">
 
        <Nav style={{padding:'15px'}}>
-       <NavItem>
+       <NavItem onClick={() => navigate('/')} style={{cursor:'pointer'}}>
          <NavbarBrand>
-            ShoeShop
+            <img alt="logo" src={`${process.env.PUBLIC_URL}/image/logo.png`} width="50" />
+            <b style={{color:'purple'}}>{pageName}</b>
          </NavbarBrand>
         </NavItem>
         <NavItem>
@@ -57,6 +77,11 @@ function App() {
         <NavItem>
           <NavLink active onClick={() => navigate('/about')}>
             About
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink active onClick={() => navigate('/cart')}>
+            Cart
           </NavLink>
         </NavItem>
       </Nav>
@@ -83,11 +108,27 @@ function App() {
         <Route path="/event" element={<Event />}>
           <Route path="one" element={<>첫 주문시 양배추즙 서비스</>} />
           <Route path="two" element={<>생일기념 쿠폰받기</>} />
-        </Route>  
+        </Route> 
+
+        <Route path="/cart" element={<Cart />} />
         <Route path="*" element={<>404</>} />
 
       </Routes>
       </MenuTitleContext.Provider>
+      <div class="sidenav">
+        {
+          (recentItems.length > 0 && recentItems[0] !== undefined) ?
+          (
+            recentItems.map((item, index) =>
+            <div key={index} onClick={() => navigate(`/detail/${item.id}`, { state: {item: item}})} style={{cursor:'pointer'}}>
+              <img alt="not found" src={item.imgUrl} width="80%" />
+              <span>{item.title}</span>
+            </div>
+            )
+          )
+          : (<div></div>)
+        }
+      </div>
     </div>
   );
 }
